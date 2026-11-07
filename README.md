@@ -1,6 +1,6 @@
 # Smart Alarm
 
-Aplikasi Android native untuk menjadwalkan sesi fokus dan menerima alarm saat sesi berakhir.
+Aplikasi Android native untuk menjadwalkan rentang fokus harian dan menerima alarm saat rentang berakhir.
 
 ## Batasan keamanan Android
 
@@ -8,21 +8,25 @@ Smart Alarm tidak mengunci Android, menonaktifkan tombol sistem, atau mencegah p
 
 ## Fitur
 
-- Pilih durasi 15, 25, 45, atau 60 menit.
-- Jadwalkan satu sesi fokus pada waktu pilihan berikutnya. Jika waktu yang dipilih sudah lewat hari ini, jadwal dibuat untuk esok hari.
-- Mulai sesi fokus langsung dari aplikasi.
-- Terima notifikasi saat waktu jadwal tiba, lalu ketuk untuk memulai fokus.
-- Terima notifikasi alarm saat sesi selesai dan pilih jawaban untuk menutup sesi.
+- Atur waktu mulai dan selesai harian, misalnya 17:00 sampai 05:00. Rentang melewati tengah malam didukung.
+- Pilih format jam 24 jam atau 12 jam (AM/PM), serta bahasa Indonesia atau English.
+- Jadwal berulang setiap hari sampai dimatikan. Bila jadwal diaktifkan saat sedang berada di dalam rentang, sesi dimulai setelah notifikasi diketuk.
+- Mulai sesi fokus langsung dengan durasi cepat 15, 25, 45, atau 60 menit.
+- Terima notifikasi saat waktu mulai tiba, lalu ketuk untuk memulai fokus sampai jam akhir yang ditentukan.
+- Terima notifikasi alarm saat sesi selesai dan pilih jawaban untuk menutup alarm.
 - Keluar darurat tersedia selama fokus maupun alarm.
 
-## Menjalankan
+## Menjalankan dan memasang
 
-1. Buka folder ini di Android Studio.
-2. Pastikan Android SDK Platform 35 dan JDK 17 tersedia.
-3. Sinkronkan Gradle, lalu jalankan konfigurasi `app` pada emulator atau perangkat Android.
-4. Izinkan notifikasi saat diminta. Agar waktu jadwal lebih akurat, izinkan alarm dan pengingat di pengaturan Android jika perangkat memintanya.
+1. Pasang Android Studio di komputer, lalu buka folder proyek ini.
+2. Pada SDK Manager, pasang Android SDK Platform 35 dan Build Tools yang ditawarkan Android Studio. Pastikan JDK 17 tersedia.
+3. Tunggu Gradle Sync selesai, lalu pilih **Build > Build App Bundle(s) / APK(s) > Build APK(s)**.
+4. Setelah build berhasil, pilih **locate** pada notifikasi Android Studio. APK debug berada di `app/build/outputs/apk/debug/app-debug.apk`.
+5. Pindahkan APK ke ponsel/tablet melalui USB atau metode transfer file pilihan Anda.
+6. Buka APK pada perangkat. Jika diminta, izinkan instalasi dari sumber tersebut di **Settings > Install unknown apps**, lalu konfirmasi **Install**.
+7. Buka Smart Alarm dan izinkan notifikasi. Untuk jadwal yang lebih tepat, Android dapat meminta izin **Alarms & reminders** pada halaman info aplikasi.
 
-Proyek dapat dibuka dan dijalankan melalui Android Studio setelah Android SDK Platform 35 dan JDK 17 tersedia.
+Untuk memasang langsung melalui USB setelah mengaktifkan USB debugging, hubungkan perangkat dan jalankan `adb install -r app/build/outputs/apk/debug/app-debug.apk` dari komputer yang memiliki Android SDK Platform Tools.
 
 ## Catatan operasional
 

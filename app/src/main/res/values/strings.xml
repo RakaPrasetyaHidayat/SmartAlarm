@@ -1,0 +1,35 @@
+<resources>
+    <string name="app_name">Smart Alarm</string>
+    <string name="home_subtitle">Atur rentang waktu fokus</string>
+    <string name="status_default">Belum ada sesi aktif.</string>
+    <string name="duration_title">Durasi fokus langsung</string>
+    <string name="start_time">Mulai: %1$s</string>
+    <string name="end_time">Selesai: %1$s</string>
+    <string name="save_schedule">Aktifkan jadwal harian</string>
+    <string name="cancel_schedule">Matikan jadwal</string>
+    <string name="start_now">Mulai fokus sekarang</string>
+    <string name="schedule_active_status">Jadwal harian aktif.</string>
+    <string name="schedule_missed_status">Waktu sesi ini sudah lewat. Jadwal berikutnya tetap aktif.</string>
+    <string name="schedule_saved_status">Jadwal aktif setiap hari: %1$s sampai %2$s.</string>
+    <string name="invalid_window">Jam mulai dan selesai tidak boleh sama.</string>
+    <string name="session_running">Sesi fokus sedang berjalan.</string>
+    <string name="schedule_canceled">Jadwal fokus dimatikan.</string>
+    <string name="session_stopped">Sesi fokus dihentikan.</string>
+    <string name="alarm_stopped">Alarm dihentikan: %1$s</string>
+    <string name="time_format_title">Format waktu</string>
+    <string name="format_24h">24 jam</string>
+    <string name="format_12h">AM/PM</string>
+    <string name="language_title">Bahasa / Language</string>
+    <string name="language_indonesian">Bahasa Indonesia</string>
+    <string name="language_english">English</string>
+    <string name="device_limit">Jadwal mengirim notifikasi untuk memulai sesi. Android tetap dapat keluar dari aplikasi; tombol darurat selalu tersedia.</string>
+    <string name="focus_title">Sesi fokus</string>
+    <string name="remaining_time">%1$d:%2$02d tersisa</string>
+    <string name="focus_description">Tetap di layar ini sampai alarm berbunyi, atau keluar kapan saja melalui tombol darurat.</string>
+    <string name="emergency_exit">Keluar darurat</string>
+    <string name="alarm_title">Waktu fokus selesai</string>
+    <string name="alarm_prompt">Pilih satu jawaban untuk menghentikan alarm.</string>
+    <string name="alarm_choice_1">Saya siap melanjutkan</string>
+    <string name="alarm_choice_2">Saya akan istirahat sejenak</string>
+    <string name="alarm_choice_3">Saya menyelesaikan satu tugas</string>
+</resources>

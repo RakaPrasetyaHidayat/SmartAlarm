@@ -1,0 +1,35 @@
+<resources>
+    <string name="app_name">Smart Alarm</string>
+    <string name="home_subtitle">Set your focus time window</string>
+    <string name="status_default">No active session.</string>
+    <string name="duration_title">Quick focus duration</string>
+    <string name="start_time">Start: %1$s</string>
+    <string name="end_time">End: %1$s</string>
+    <string name="save_schedule">Enable daily schedule</string>
+    <string name="cancel_schedule">Turn schedule off</string>
+    <string name="start_now">Start focusing now</string>
+    <string name="schedule_active_status">Daily schedule is active.</string>
+    <string name="schedule_missed_status">This session time has passed. The next scheduled session remains active.</string>
+    <string name="schedule_saved_status">Daily schedule active: %1$s to %2$s.</string>
+    <string name="invalid_window">Start and end times cannot be the same.</string>
+    <string name="session_running">Focus session is running.</string>
+    <string name="schedule_canceled">Focus schedule turned off.</string>
+    <string name="session_stopped">Focus session stopped.</string>
+    <string name="alarm_stopped">Alarm dismissed: %1$s</string>
+    <string name="time_format_title">Time format</string>
+    <string name="format_24h">24-hour</string>
+    <string name="format_12h">AM/PM</string>
+    <string name="language_title">Language / Bahasa</string>
+    <string name="language_indonesian">Bahasa Indonesia</string>
+    <string name="language_english">English</string>
+    <string name="device_limit">The schedule sends a notification to start a session. Android can still leave the app; an emergency exit is always available.</string>
+    <string name="focus_title">Focus session</string>
+    <string name="remaining_time">%1$d:%2$02d remaining</string>
+    <string name="focus_description">Stay on this screen until the alarm, or leave at any time using the emergency exit.</string>
+    <string name="emergency_exit">Emergency exit</string>
+    <string name="alarm_title">Focus time is over</string>
+    <string name="alarm_prompt">Choose one response to dismiss the alarm.</string>
+    <string name="alarm_choice_1">I am ready to continue</string>
+    <string name="alarm_choice_2">I will take a short break</string>
+    <string name="alarm_choice_3">I completed one task</string>
+</resources>
