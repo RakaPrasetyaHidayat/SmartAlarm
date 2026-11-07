@@ -53,8 +53,8 @@ class AlarmReceiver : BroadcastReceiver() {
             )
             .setContentText(
                 when {
-                    isSessionEnd && english -> "Open Smart Alarm and choose a response to dismiss the alarm."
-                    isSessionEnd -> "Buka Smart Alarm dan pilih jawaban untuk menghentikan alarm."
+                    isSessionEnd && english -> "Open Smart Alarm and type the three displayed sentences to stop the alarm."
+                    isSessionEnd -> "Buka Smart Alarm dan ketik tiga kalimat yang tampil untuk menghentikan alarm."
                     english -> "Tap to focus until $endLabel."
                     else -> "Ketuk untuk fokus sampai pukul $endLabel."
                 }

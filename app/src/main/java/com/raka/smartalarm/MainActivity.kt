@@ -1,6 +1,9 @@
 package com.raka.smartalarm
 
 import android.Manifest
+import android.media.AudioAttributes
+import android.media.MediaPlayer
+import android.media.RingtoneManager
 import android.app.TimePickerDialog
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -24,7 +27,13 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -57,6 +66,7 @@ class MainActivity : ComponentActivity() {
     private var screen by mutableStateOf(Screen.HOME)
     private var alarmPending by mutableStateOf(false)
     private var statusMessage by mutableStateOf("")
+    private var alarmPlayer: MediaPlayer? = null
 
     private val notificationPermission = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -75,6 +85,16 @@ class MainActivity : ComponentActivity() {
         setIntent(intent)
         handleIntent(intent)
         render()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        if (screen == Screen.ALARM) startAlarmSound()
+    }
+
+    override fun onStop() {
+        stopAlarmSound()
+        super.onStop()
     }
 
     private fun restoreState() {
@@ -108,6 +128,7 @@ class MainActivity : ComponentActivity() {
                 screen = Screen.ALARM
                 alarmPending = true
                 preferences.edit().putBoolean(AlarmReceiver.KEY_ALARM_PENDING, true).apply()
+                startAlarmSound()
             }
             ACTION_BEGIN_FOCUS -> {
                 val endAt = intent.getLongExtra(AlarmReceiver.EXTRA_END_AT, 0L)
@@ -164,7 +185,10 @@ class MainActivity : ComponentActivity() {
                                 onEmergencyExit = ::emergencyExit,
                                 onFinished = ::showAlarm,
                             )
-                            Screen.ALARM -> AlarmScreen(onChoice = ::dismissAlarm)
+                            Screen.ALARM -> AlarmScreen(
+                                onChallengeComplete = { dismissAlarm(localizedString(R.string.challenge_completed)) },
+                                onEmergencyExit = { dismissAlarm(localizedString(R.string.emergency_exit)) },
+                            )
                         }
                     }
                 }
@@ -255,10 +279,12 @@ class MainActivity : ComponentActivity() {
         alarmPending = true
         preferences.edit().putBoolean(AlarmReceiver.KEY_ALARM_PENDING, true).apply()
         screen = Screen.ALARM
+        startAlarmSound()
         render()
     }
 
     private fun dismissAlarm(choice: String) {
+        stopAlarmSound()
         AlarmReceiver.cancel(this, sessionEnd = true)
         AlarmReceiver.clearNotifications(this)
         preferences.edit()
@@ -270,6 +296,41 @@ class MainActivity : ComponentActivity() {
         screen = Screen.HOME
         statusMessage = localizedString(R.string.alarm_stopped, choice)
         render()
+    }
+
+    private fun startAlarmSound() {
+        if (alarmPlayer?.isPlaying == true) return
+        val alarmUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
+            ?: RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
+            ?: return
+        val player = MediaPlayer()
+        try {
+            player.setAudioAttributes(
+                AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_ALARM)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                    .build()
+            )
+            player.setDataSource(this, alarmUri)
+            player.isLooping = true
+            player.setVolume(1f, 1f)
+            player.prepare()
+            player.start()
+            alarmPlayer = player
+        } catch (_: Exception) {
+            player.release()
+        }
+    }
+
+    private fun stopAlarmSound() {
+        val player = alarmPlayer ?: return
+        alarmPlayer = null
+        try {
+            if (player.isPlaying) player.stop()
+        } catch (_: IllegalStateException) {
+        } finally {
+            player.release()
+        }
     }
 
     private fun requestNotificationPermissionIfNeeded() {
@@ -404,23 +465,73 @@ private fun FocusScreen(endTime: Long, onEmergencyExit: () -> Unit, onFinished: 
 }
 
 @androidx.compose.runtime.Composable
-private fun AlarmScreen(onChoice: (String) -> Unit) {
+private fun AlarmScreen(onChallengeComplete: () -> Unit, onEmergencyExit: () -> Unit) {
+    val focusManager = LocalFocusManager.current
+    val sentenceOptions = listOf(
+        stringResource(R.string.challenge_sentence_1),
+        stringResource(R.string.challenge_sentence_2),
+        stringResource(R.string.challenge_sentence_3),
+        stringResource(R.string.challenge_sentence_4),
+        stringResource(R.string.challenge_sentence_5),
+        stringResource(R.string.challenge_sentence_6),
+    )
+    val sentences = remember(sentenceOptions) { sentenceOptions.shuffled().take(3).joinToString(" ") }
+    var answer by remember(sentences) { mutableStateOf("") }
+    var showError by remember(sentences) { mutableStateOf(false) }
+    val normalizedSentence = sentences.trim().replace(Regex("\\s+"), " ")
+    val normalizedAnswer = answer.trim().replace(Regex("\\s+"), " ")
+
     Column(
-        modifier = Modifier.fillMaxSize().padding(24.dp),
+        modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(24.dp),
         verticalArrangement = Arrangement.Center,
     ) {
         Text(stringResource(R.string.alarm_title), style = MaterialTheme.typography.headlineMedium)
         Spacer(Modifier.height(12.dp))
-        Text(stringResource(R.string.alarm_prompt))
+        Text(stringResource(R.string.alarm_challenge_prompt))
         Spacer(Modifier.height(24.dp))
-        listOf(stringResource(R.string.alarm_choice_1), stringResource(R.string.alarm_choice_2), stringResource(R.string.alarm_choice_3)).forEach { choice ->
-            Button(onClick = { onChoice(choice) }, modifier = Modifier.fillMaxWidth()) {
-                Text(choice)
-            }
-            Spacer(Modifier.height(8.dp))
+        Surface(modifier = Modifier.fillMaxWidth(), color = MaterialTheme.colorScheme.surfaceVariant) {
+            Text(sentences, modifier = Modifier.padding(16.dp), style = MaterialTheme.typography.bodyLarge)
         }
-        OutlinedButton(onClick = { onChoice("Keluar darurat") }, modifier = Modifier.fillMaxWidth()) {
+        Spacer(Modifier.height(16.dp))
+        OutlinedTextField(
+            value = answer,
+            onValueChange = {
+                answer = it
+                showError = false
+            },
+            modifier = Modifier.fillMaxWidth(),
+            label = { Text(stringResource(R.string.challenge_input_label)) },
+            minLines = 3,
+            keyboardOptions = KeyboardOptions(
+                capitalization = KeyboardCapitalization.Sentences,
+                imeAction = ImeAction.Done,
+            ),
+            keyboardActions = KeyboardActions(onDone = {
+                focusManager.clearFocus()
+                if (normalizedAnswer.equals(normalizedSentence, ignoreCase = true)) onChallengeComplete()
+                else showError = true
+            }),
+        )
+        if (showError) {
+            Spacer(Modifier.height(8.dp))
+            Text(stringResource(R.string.challenge_incorrect), color = MaterialTheme.colorScheme.error)
+        }
+        Spacer(Modifier.height(12.dp))
+        Button(
+            onClick = {
+                focusManager.clearFocus()
+                if (normalizedAnswer.equals(normalizedSentence, ignoreCase = true)) onChallengeComplete()
+                else showError = true
+            },
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            Text(stringResource(R.string.challenge_submit))
+        }
+        Spacer(Modifier.height(8.dp))
+        OutlinedButton(onClick = onEmergencyExit, modifier = Modifier.fillMaxWidth()) {
             Text(stringResource(R.string.emergency_exit))
         }
+        Spacer(Modifier.height(8.dp))
+        Text(stringResource(R.string.alarm_volume_note), style = MaterialTheme.typography.bodySmall)
     }
 }

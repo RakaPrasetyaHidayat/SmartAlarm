@@ -13,7 +13,7 @@ Smart Alarm tidak mengunci Android, menonaktifkan tombol sistem, atau mencegah p
 - Jadwal berulang setiap hari sampai dimatikan. Bila jadwal diaktifkan saat sedang berada di dalam rentang, sesi dimulai setelah notifikasi diketuk.
 - Mulai sesi fokus langsung dengan durasi cepat 15, 25, 45, atau 60 menit.
 - Terima notifikasi saat waktu mulai tiba, lalu ketuk untuk memulai fokus sampai jam akhir yang ditentukan.
-- Terima notifikasi alarm saat sesi selesai dan pilih jawaban untuk menutup alarm.
+- Terima notifikasi alarm saat sesi selesai. Buka notifikasi, lalu ketik tiga kalimat acak yang ditampilkan untuk menghentikan suara berulang.
 - Keluar darurat tersedia selama fokus maupun alarm.
 
 ## Menjalankan dan memasang
@@ -34,6 +34,7 @@ Untuk memasang langsung melalui USB setelah mengaktifkan USB debugging, hubungka
 - Aplikasi tidak membuka layar secara paksa dari latar belakang; Android membatasi peluncuran aktivitas tersebut.
 - Jadwal tersimpan di perangkat, tetapi saat ini tidak dipulihkan otomatis setelah perangkat dimulai ulang.
 - Alarm memakai suara notifikasi sistem. Pengguna dapat mengubah volume atau kanal notifikasi dari pengaturan Android.
+- Suara berulang selama layar alarm aplikasi terbuka; suara berhenti saat layar aplikasi ditinggalkan. Aplikasi tidak memaksa volume sistem ke maksimum, dan tombol volume perangkat tetap berfungsi.
 
 ## Struktur
 
